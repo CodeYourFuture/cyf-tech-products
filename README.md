@@ -8,7 +8,7 @@
 - https://github.com/CodeYourFuture/dashboard
 
 ## Start here
-https://github.com/CodeYourFuture/tech-team/wiki/Setting-up-development-environment
+https://github.com/CodeYourFuture/tech-team/wiki/1.1-Setting-up-development-environment
 
 ## Projects (some self organising, some managed)
 
