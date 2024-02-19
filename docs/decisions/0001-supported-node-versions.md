@@ -26,6 +26,7 @@ Although we have identified and fixed these issues in the past, it takes a long 
 
 * Pin a canonical Node version
 * Use floating active LTS version
+* Use latest Node LTS version
 * Use latest Node version
 
 ## Decision Outcome
@@ -42,16 +43,15 @@ Chosen option: "Use floating active LTS version", because it strikes the best ba
 
 ### Confirmation
 
-- Every repo should have an explicit `engines` setting in each `package.json` file, allowing the active and maintenance LTS versions (e.g. `"engines": { "node": "^18.12 || ^20.9" }`)
+- Every repo should have an explicit `engines` setting in each `package.json` file, allowing the active LTS version (e.g. `"engines": { "node": "^20.9" }`)
 - Every repo should have a `.npmrc` setting `engine-strict = true` alongside each package file, and this should be copied into the container (e.g. `COPY package*.json .npmrc ./`) prior to dependency install where relevant
-- If a repo has a `.nvmrc`, that should contain a simple major version (e.g. `20`)
+- If a repo has a `.nvmrc`, that should contain a simple major version corresponding to the active LTS (e.g. `20`)
 - If a repo has a `Dockerfile` it should use an official `node:` image and may either:
   - take the Node version as a build argument (e.g. `node:$NODE_RELEASE-slim`), where a `.nvmrc` is used to supply the value;
-  - set a simple major version (e.g. `node:20-alpine`); or
-  - set `lts` (e.g. `node:lts`); and
-  - **not** pin e.g. Alpine/Ubuntu versions
-- If a repo has a `.circleci/config.yml`, that should use `cimg/node:lts`
-- If a repo has a `.github/workflows/*.yml`, that should use `actions/setup-node` with `node-version: lts`
+  - set a simple major version (e.g. `node:20-alpine`); and
+  - **not** pin e.g. Alpine (currently 3.19) or Debian (currently Bookworm) versions
+- If a repo has a `.circleci/config.yml`, that should use `cimg/node:20.11` (**note**: CircleCI does not support floating major versions)
+- If a repo has a `.github/workflows/*.yml`, that should use `actions/setup-node` with e.g.`node-version: 20`
 
 ## Pros and Cons of the Options
 
@@ -73,7 +73,20 @@ We would use a single specific version, e.g. `20.11.0` (latest active LTS releas
 * Good, because we get an 18-month buffer on our maintenance updates
 * Good, because we'd be using relatively mature Node versions
 * Neutral, because developers can use a single version across the ecosystem
+* Bad, because support in CircleCI is poor (but we're migrating to GitHub Actions anyway)
 * Bad, because we don't get reproducible builds
+* Bad, because some maintenance is needed
+
+### Use latest Node LTS version
+
+We wouldn't only pin the Node version to "current LTS", e.g. using `FROM node:lts` in Docker files.
+
+* Good, because we get all security updates
+* Good, because we get an 18-month buffer on our maintenance updates
+* Good, because we'd be using relatively mature Node versions
+* Neutral, because developers can use a single version across the ecosystem
+* Bad, because we don't get reproducible builds
+* Bad, because not all relevant tooling supports "current LTS" as a version (e.g. can't express this in `engines` in package file or use `lts` in `.nvmrc`)
 * Bad, because some maintenance is needed
 
 ### Use latest Node version
