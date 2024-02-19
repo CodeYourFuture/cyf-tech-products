@@ -2,7 +2,7 @@
 status: proposed
 date: 2024-02-19
 deciders: Jon, Karen
-consulted: Andrei, Raj
+consulted: Andrei, Pedro, Raj
 informed: N/A
 ---
 # Supported Node versions
