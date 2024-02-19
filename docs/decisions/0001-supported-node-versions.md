@@ -1,8 +1,8 @@
 ---
 status: proposed
 date: 2024-02-19
-deciders: Jon Sharpe
-consulted: N/A
+deciders: Jon, Karen
+consulted: Andrei, Raj
 informed: N/A
 ---
 # Supported Node versions
