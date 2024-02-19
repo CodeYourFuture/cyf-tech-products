@@ -1,9 +1,9 @@
 ---
 status: proposed
 date: 2024-02-19
-deciders: @textbook
-consulted: 
-informed: 
+deciders: Jon Sharpe
+consulted: N/A
+informed: N/A
 ---
 # Supported Node versions
 
