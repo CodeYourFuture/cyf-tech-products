@@ -45,7 +45,13 @@ Chosen option: "Use floating active LTS version", because it strikes the best ba
 - Every repo should have an explicit `engines` setting in each `package.json` file, allowing the active and maintenance LTS versions (e.g. `"engines": { "node": "^18.12 || ^20.9" }`)
 - Every repo should have a `.npmrc` setting `engine-strict = true` alongside each package file, and this should be copied into the container (e.g. `COPY package*.json .npmrc ./`) prior to dependency install where relevant
 - If a repo has a `.nvmrc`, that should contain a simple major version (e.g. `20`)
-- If a repo has a `Dockerfile` it should use an official `node:` image and may either take the Node version as a build argument (e.g. `node:$NODE_RELEASE-slim`), where a `.nvmrc` is used to supply the value, or set a simple major version (e.g. `node:20-alpine`)
+- If a repo has a `Dockerfile` it should use an official `node:` image and may either:
+  - take the Node version as a build argument (e.g. `node:$NODE_RELEASE-slim`), where a `.nvmrc` is used to supply the value;
+  - set a simple major version (e.g. `node:20-alpine`); or
+  - set `lts` (e.g. `node:lts`); and
+  - **not** pin e.g. Alpine/Ubuntu versions
+- If a repo has a `.circleci/config.yml`, that should use `cimg/node:lts`
+- If a repo has a `.github/workflows/*.yml`, that should use `actions/setup-node` with `node-version: lts`
 
 ## Pros and Cons of the Options
 
