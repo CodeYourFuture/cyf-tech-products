@@ -44,7 +44,7 @@ Chosen option: "Use floating active LTS version", because it strikes the best ba
 ### Confirmation
 
 - Every repo should have an explicit `engines` setting in each `package.json` file, allowing the active LTS version (e.g. `"engines": { "node": "^20.9" }`)
-- Every repo should have a `.npmrc` setting `engine-strict = true` alongside each package file, and this should be copied into the container (e.g. `COPY package*.json .npmrc ./`) prior to dependency install where relevant
+- Every repo using npm (Yarn enforces it by default) should have a `.npmrc` setting `engine-strict = true` alongside each package file, and this should be copied into the container (e.g. `COPY package*.json .npmrc ./`) prior to dependency install where relevant
 - If a repo has a `.nvmrc`, that should contain a simple major version corresponding to the active LTS (e.g. `20`)
 - If a repo has a `Dockerfile` it should use an official `node:` image and may either:
   - take the Node version as a build argument (e.g. `node:$NODE_RELEASE-slim`), where a `.nvmrc` is used to supply the value;
