@@ -39,6 +39,10 @@ function lastPullRequest() {
 		--limit 1 \
 		--repo "$REPO" \
 		--state all)"
+	if [[ ! "$HEAD_REF" =~ ^adr/[0-9]{4}- ]]; then
+		echo "cannot infer ADR # from previous branch name $HEAD_REF"
+		exit 1
+	fi
 	echo "$((10#${HEAD_REF:4:4}))"
 }
 NUMBER="$(printf '%04d' "$(($(lastPullRequest) + 1))")"
