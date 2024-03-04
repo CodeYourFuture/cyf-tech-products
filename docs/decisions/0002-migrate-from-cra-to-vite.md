@@ -1,79 +1,109 @@
 ---
-# These are optional elements. Feel free to remove any of them.
-status: "{proposed | rejected | accepted | deprecated | … | superseded by [ADR-0005](0005-example.md)}"
-date: {YYYY-MM-DD when the decision was last updated}
-deciders: {list everyone involved in the decision}
-consulted: {list everyone whose opinions are sought (typically subject-matter experts); and with whom there is a two-way communication}
-informed: {list everyone who is kept up-to-date on progress; and with whom there is a one-way communication}
+status: proposed
+date: 2024-03-04
+deciders: Jon, Karen
+consulted: Andrei, Raj
+informed: N/A
 ---
-# {short title of solved problem and solution}
+# Migrate from Create React App to Vite
 
 ## Context and Problem Statement
 
-{Describe the context and problem statement, e.g., in free form using two to three sentences or in the form of an illustrative story.
-You may want to articulate the problem in form of a question and add links to collaboration boards or issue management systems.}
+Several of our React client applications use [Create React App](https://create-react-app.dev/)/`react-scripts`, at various versions (`3.4.4`, `4.0.1` and `5.0.1`/latest).
+This project has seemingly been abandoned - the last release was published on 2022/4/12, almost two years ago, and [the updated React docs](https://react.dev/) no longer recommend its use.
 
-<!-- This is an optional element. Feel free to remove. -->
+Some of the vulnerabilities identified in our repos are via `react-scripts`, which has a large surface area due to the large number of dependencies (a brand new CRA app brings in 1,559 packages).
+Some of these can be fixed by applying patches to the dependency tree (Dependabot-created or otherwise) or using the latest version of CRA, but at least two (one high, one moderate) cannot.
+Although the maintainers [reasonably point out](https://github.com/facebook/create-react-app/issues/11174) that this doesn't necessarily impact end users, its inclusion in `dependencies` (as some of the things it installs _are_ part of the bundled code we ship) makes it hard to determine the right course of action for a given vulnerability.
+
 ## Decision Drivers
 
-* {decision driver 1, e.g., a force, facing concern, …}
-* {decision driver 2, e.g., a force, facing concern, …}
-* … <!-- numbers of drivers can vary -->
+* CRA/`react-scripts` is out of support
+* Currently two unfixable vulnerabilities, more may emerge
+* React documentation no longer references CRA
+    * Now references (among others) [Vite](https://vitejs.dev/) and [Next.js](https://nextjs.org/)
+    * CYF is also moving away from CRA ([to Vite](https://curriculum.codeyourfuture.io/react/prep/#check-you-can-create-a-react-app-with-vite))
+* Good PR is already using Next.js
 
 ## Considered Options
 
-* {title of option 1}
-* {title of option 2}
-* {title of option 3}
-* … <!-- numbers of options can vary -->
+* Retain CRA
+* Migrate to Vite (and [Vitest](https://vitest.dev))
+* Migrate to Next.js
 
 ## Decision Outcome
 
-Chosen option: "{title of option 1}", because
-{justification. e.g., only option, which meets k.o. criterion decision driver | which resolves force {force} | … | comes out best (see below)}.
+Chosen option: "Migrate to Vite", because it comes out best (see below).
 
 <!-- This is an optional element. Feel free to remove. -->
 ### Consequences
 
-* Good, because {positive consequence, e.g., improvement of one or more desired qualities, …}
-* Bad, because {negative consequence, e.g., compromising one or more desired qualities, …}
-* … <!-- numbers of consequences can vary -->
+* Good, because we resolve the vulnerabilities
+* Good, because we rely on tooling that's still actively maintained
+* Good, because we reduce our surface area (223 packages for a new Vite/React app)
+* Bad, because four repos need changes
 
 <!-- This is an optional element. Feel free to remove. -->
 ### Confirmation
 
-{Describe how the implementation of/compliance with the ADR is confirmed. E.g., by a review or an ArchUnit test.
-Although we classify this element as optional, it is included in most ADRs.}
+`react-scripts` will no longer exist in the `dependencies`/`devDependencies` in any of our applications.
 
 <!-- This is an optional element. Feel free to remove. -->
 ## Pros and Cons of the Options
 
-### {title of option 1}
+### Retain CRA
 
-<!-- This is an optional element. Feel free to remove. -->
-{example | description | pointer to more information | …}
+We keep CRA, but upgrade all applications using it to v5.0.1
 
-* Good, because {argument a}
-* Good, because {argument b}
-<!-- use "neutral" if the given argument weights neither for good nor bad -->
-* Neutral, because {argument c}
-* Bad, because {argument d}
-* … <!-- numbers of pros and cons can vary -->
+* Good, because only two repos (Dashboard, ITD) need any changes
+* Neutral, because no substantial architectural changes are required
+* Neutral, because we gain no improved functionality
+* Bad, because we cannot resolve the vulnerabilities
+* Bad, because we retain a large surface area
+* Bad, because we rely on tooling that no longer gets updates
 
-### {title of other option}
+### Migrate to Vite
 
-{example | description | pointer to more information | …}
+We replace CRA with Vite, which is close to a drop-in replacement
 
-* Good, because {argument a}
-* Good, because {argument b}
-* Neutral, because {argument c}
-* Bad, because {argument d}
-* …
+* Good, because we resolve the vulnerabilities
+* Good, because we rely on tooling that's still actively maintained
+* Good, because we reduce our surface area (223 packages for a new Vite/React app)
+* Neutral, because we gain no additional functionality
+* Neutral, because no substantial architectural changes are required
+* Bad, because four repos need changes
+
+### Migrate to Next.js
+
+We replace CRA with Next.js (in [static export mode](https://nextjs.org/docs/app/building-your-application/deploying/static-exports)), which is a different approach to building frontend apps
+
+* Good, because we resolve the vulnerabilities
+* Good, because we rely on tooling that's still actively maintained
+* Good, because we reduce our surface area (308 packages for a new Next.js app)
+* Good, because we gain some additional functionality (e.g. page pre-rendering)
+* Bad, because it requires subsantial architectural changes (and learning)
+* Bad, because four repos need changes
 
 <!-- This is an optional element. Feel free to remove. -->
 ## More Information
 
-{You might want to provide additional evidence/confidence for the decision outcome here and/or
-document the team agreement on the decision and/or
-define when/how this decision the decision should be realized and if/when it should be re-visited.
-Links to other decisions and resources might appear here as well.}
+Unfixable vulnerabilities via `react-scripts`:
+- 🔴 High - `nth-check` https://github.com/advisories/GHSA-rp65-9cf3-cjxr
+- 🟡 Moderate - `post-css` https://github.com/advisories/GHSA-7fh5-64p2-3v2j
+
+Current versions:
+
+- API
+    - _N/A_ (no React client code)
+- Class Planner
+    - `"^5.0.1"` -> `5.0.1`
+- Dashboard
+    - `"^4.0.1"` -> `4.0.1`
+- Forms
+    - `"5.0.1"` -> `5.0.1`
+- Good PR
+    - _N/A_ (uses Next.js)
+- ITD
+    - `"^3.0.0"` -> `3.4.4`
+- Project Rainbird
+    - _N/A_ (uses Webpack etc. directly)
