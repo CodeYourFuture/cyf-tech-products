@@ -30,6 +30,7 @@ Although the maintainers [reasonably point out](https://github.com/facebook/crea
 * Retain CRA
 * Migrate to Vite (and [Vitest](https://vitest.dev))
 * Migrate to Next.js
+* Migrate to hand-rolled Webpack etc.
 
 ## Decision Outcome
 
@@ -82,6 +83,17 @@ We replace CRA with Next.js (in [static export mode](https://nextjs.org/docs/app
 * Good, because we reduce our surface area (308 packages for a new Next.js app)
 * Good, because we gain some additional functionality (e.g. page pre-rendering)
 * Bad, because it requires subsantial architectural changes (and learning)
+* Bad, because four repos need changes
+
+### Migrate to hand-rolled Webpack etc.
+
+We use the same setup already in Project Rainbird for the currently-CRA client apps
+
+* Good, because we resolve the vulnerabilities
+* Good, because we reduce our surface area
+* Neutral, because we gain no additional functionality
+* Neutral, because no substantial architectural changes are required
+* Bad, because we have to maintain that tooling ourselves
 * Bad, because four repos need changes
 
 <!-- This is an optional element. Feel free to remove. -->
