@@ -10,7 +10,7 @@ NAME="$1"
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 LABEL='adr'
-REPO='CodeYourFuture/tech-team'
+REPO='CodeYourFuture/cyf-tech-products'
 
 if [[ -n "$(git status --porcelain --untracked-files no)" ]]; then
 	echo 'Cannot apply to unclean repo, commit or stash your changes.'
@@ -18,7 +18,7 @@ if [[ -n "$(git status --porcelain --untracked-files no)" ]]; then
 fi
 
 echo 'Updating repository'
-git checkout master
+git checkout main
 git pull
 
 if ! type gh >/dev/null 2>&1 || ! gh auth status >/dev/null 2>&1; then
