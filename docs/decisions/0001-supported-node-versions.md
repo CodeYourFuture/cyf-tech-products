@@ -1,6 +1,6 @@
 ---
-status: proposed
-date: 2024-02-19
+status: accepted
+date: 2024-03-15
 deciders: Jon, Karen
 consulted: Andrei, Pedro, Raj
 informed: N/A
