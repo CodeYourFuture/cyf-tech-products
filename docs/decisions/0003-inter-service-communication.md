@@ -21,7 +21,8 @@ Increasingly, CYF has multiple services which want to share data between each ot
 
 Chosen option: API access via delegated authority, because it:
 * Minimises duplication across services
-* Reduces the likelihood of accidentally leaking or destroying sensitive information
+* Reduces the likelihood of accidentally destroying sensitive information
+* Allows for granular access control, and reduces the likelihood of accidentally leaking information more broadly than intended
 * Allows for internal re-implementation of individual services without coordination, as long as the published API doesn't change
 
 ### Confirmation
